@@ -2,6 +2,7 @@ import time
 from colorama import init, Fore, Style
 from prompt_toolkit import prompt
 from openfoodfacts import API, APIVersion, Country, Environment, Flavor
+import menu
 
 api = API(
     user_agent="tastyBarcodes/v0.1 (boom@thetwoboom.xyz)",
@@ -33,7 +34,7 @@ print(f"""
 |                 |___/                                               |
  ---------------------------------------------------------------------{Style.RESET_ALL}""")
 
-choice = menu(
+choice = menu.menu(
     title="Main Menu",
     options=["Play", "Set Timer", "Credits", "Exit"],
     cursor_color="green",
@@ -54,8 +55,7 @@ elif choice == "Credits":
 elif choice == "Exit":
     exit()
 
-
-clock = int(prompt("Set how many seconds the timer should have. just type the number" ).strip())
+clock = int(prompt("Set how many seconds the timer should have: " ).strip())
 
 input("Press Enter to continue...")
 while clock > 0:
