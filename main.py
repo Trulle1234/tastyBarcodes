@@ -65,7 +65,7 @@ while clock > 0:
     ingredient_other = ingredients_list.ingredients_translated[ingredient_en]
 
     print("Plese find something contaning: " + ingredient_en)
-    code = input("Plese scan your item: ")
+    code = input("Plese scan your item: ") # this is wrong but its just teporary
 
     ingredients = api.product.get(code).get("ingredients")
     if ingredient_en in api.product.get(code).get("ingredients"):
