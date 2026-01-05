@@ -19,7 +19,6 @@ ingredients_translated = {
     "Carbon dioxide": "Kohlensäure",
     "Taurine": "Taurin",
     "Caffeine": "Koffein",
-    "Niacin": "Niacin",
     "Pantothenic acid": "Pantothensäure",
     "Flavors": "Aromen",
     "Colorings": "Farbstoffe",

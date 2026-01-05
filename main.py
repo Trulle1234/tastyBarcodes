@@ -1,8 +1,10 @@
 import time
+import random
 from colorama import init, Fore, Style
 from prompt_toolkit import prompt
 from openfoodfacts import API, APIVersion, Country, Environment, Flavor
 import menu
+import ingredients_list
 
 api = API(
     user_agent="tastyBarcodes/v0.1 (boom@thetwoboom.xyz)",
@@ -36,7 +38,7 @@ print(f"""
 
 choice = menu.menu(
     title="Main Menu",
-    options=["Play", "Set Timer", "Credits", "Exit"],
+    options=["Play", "Credits", "Exit"],
     cursor_color="green",
     title_color="cyan",
     options_color="white",
@@ -44,9 +46,6 @@ choice = menu.menu(
 
 if choice == "Play":
     pass  # start game
-
-elif choice == "Set Timer":
-    clock = int(input("Set timer in seconds: "))
 
 elif choice == "Credits":
     print("Made by _________________")
@@ -61,7 +60,17 @@ input("Press Enter to continue...")
 while clock > 0:
     print("\n"*100)
     print(f"Timer: {Fore.RED}{str(clock)}{Style.RESET_ALL}s left")
-    print("Ingredient Placeholder")
+
+    ingredient_en = random.choice(list(ingredients_list.ingredients_translated.keys()))
+    ingredient_other = ingredients_list.ingredients_translated[ingredient_en]
+
+    print("Plese find something contaning: " + ingredient_en)
+    code = input("Plese scan your item: ")
+
+    ingredients = api.product.get(code).get("ingredients")
+    if ingredient_en in api.product.get(code).get("ingredients"):
+        print("You got it!")
+        
     time.sleep(5)
     clock -= 5
 
