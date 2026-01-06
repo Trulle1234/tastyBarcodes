@@ -35,7 +35,6 @@ ingredients_translated = {
     "Cinnamon": "Zimt",
     "Sunflower oil": "Sonnenblumenöl",
     "Skimmed milk powder": "Magermilchpulver",
-    "Emulsifier": "Emulgator",
     "Salt": "Salz",
     "Butterfat": "Butterreinfett",
     "Glucose syrup": "Glukosesirup",
