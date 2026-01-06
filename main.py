@@ -99,7 +99,7 @@ while time.time() - time_start < clock:
     code = input("Please scan your item: ")
 
     if time.time() - time_start > clock:
-        print("Whoops, your time is already over")
+        print("\n"*100 + "Whoops, your time is already over \n")
         break
 
     api_response = api.product.get(code)
@@ -120,7 +120,6 @@ while time.time() - time_start < clock:
         print("You didn't get it")
 
     time.sleep(1.5)
-
 
 print(f"Timer: 0s left")
 print(f"You got {points} in total")
