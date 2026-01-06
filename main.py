@@ -7,6 +7,7 @@ from openfoodfacts import API, APIVersion, Country, Environment, Flavor
 import menu
 import ingredients_list
 import os, os.path
+from sys import exit
 
 def add_score(score, name):
     if not os.path.isfile("leaderboard.txt"):
