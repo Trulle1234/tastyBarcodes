@@ -78,6 +78,7 @@ api_key = os.environ.get("HACKCLUB_API_KEY")
 
 if not api_key:
     print("Please set HACKCLUB_API_KEY")
+    input("\nPress Enter to exit")
     exit()
 
 ingredient_array = []
