@@ -1,11 +1,33 @@
 import time
 import random
+import requests
 from colorama import init, Fore, Style
 from prompt_toolkit import prompt
 from openfoodfacts import API, APIVersion, Country, Environment, Flavor
 import menu
 import ingredients_list
-import threading
+import os
+
+def check_ingredient(target: str, api_result: str) -> bool:
+    url = "https://ai.hackclub.com/proxy/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {os.environ.get("HACKCLUB_API_KEY")}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+        "messages": [
+            {
+                "role": "user",
+                "content": f"Check if '{target}' or similar variations (plural, singular, related terms like 'water' and 'mineral water') is mentioned in this ingredient list: {api_result}. Reply with only 'yes' or 'no'."
+            }
+        ]
+    }
+
+
+    response = requests.post(url, headers=headers, json=data)
+    
+    return "yes" in response.text.lower()
 
 api = API(
     user_agent="tastyBarcodes/v0.1 (boom@thetwoboom.xyz)",
@@ -16,6 +38,12 @@ api = API(
     version=APIVersion.v2,
     environment=Environment.org,
 )
+
+api_key = os.environ.get("HACKCLUB_API_KEY")
+
+if not api_key:
+    print("Please set HACKCLUB_API_KEY")
+    exit()
 
 ingredient_array = []
 clock = 60
@@ -68,19 +96,21 @@ while time.time() - time_start < clock:
 
     print("Please find something containing: " + ingredient_en)
     
-    code = [None]
-    def get_input():
-        code[0] = prompt("Please scan your item: ", default="").strip()
-    
-    thread = threading.Thread(target=get_input, daemon=True)
-    thread.start()
-    thread.join(timeout=5.0)
-    
-    if not code[0]:
+    code = input("Please scan your item: ")
+
+    if time.time() - time_start > clock:
+        print("Whoops, your time is already over")
+        break
+
+    api_response = api.product.get(code)
+    if not api_response:
+        print("Not found in database")
+        time.sleep(1.5)
         continue
 
-    ingredients = api.product.get(code[0]).get("ingredients")
-    if ingredient_other in str(ingredients):
+    ingredients = str(api_response.get("ingredients"))
+
+    if check_ingredient(ingredient_en, str(ingredients)):
         print("You got it!")
         points += 1
         
@@ -88,43 +118,9 @@ while time.time() - time_start < clock:
         ingredient_other = ingredients_list.ingredients_translated[ingredient_en]
     else:
         print("You didn't get it")
-5000112673340
-5000112673340
-5000112673340
-5000112673340
-5000112673340
-5000112673340
-5000112673340
-5000112673340
-5000112673340
-5000112673340
-5741000230725
-5741000230725
-5000112673340
-5741000230725
-5741000230725
-5741000230725
-5000112673340
-5000112673340
-5000112673340
-5000112673340
-5000112673340
-5000112673340
-5000112673340
-5000112673340
-30373588175969
-30373588175969
-30373588175969
-30373588175969
-30373588175969
-30373588175969
-30373588175969
-30373588175969
-30373588175969
-30373588175969
-30373588175969
-30373588175969
-30373588175969
+
+    time.sleep(1.5)
+
 
 print(f"Timer: 0s left")
 print(f"You got {points} in total")

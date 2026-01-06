@@ -21,7 +21,6 @@ ingredients_translated = {
     "Caffeine": "Koffein",
     "Pantothenic acid": "Pantothensäure",
     "Flavors": "Aromen",
-    "Colorings": "Farbstoffe",
     "Flavor enhancer": "Geschmacksverstärker",
     "Preservatives": "Konservierungsstoffe",
     #"Sweeteners": "Süssungsmittel",
