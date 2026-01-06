@@ -8,7 +8,7 @@ import menu
 import ingredients_list
 import os
 
-def check_ingredient(target: str, api_result: str) -> bool:
+def check_ingredient(target_en: str,target_other: str, api_result: str) -> bool:
     url = "https://ai.hackclub.com/proxy/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {os.environ.get("HACKCLUB_API_KEY")}",
@@ -19,14 +19,16 @@ def check_ingredient(target: str, api_result: str) -> bool:
         "messages": [
             {
                 "role": "user",
-                "content": f"Check if '{target}' or similar variations (plural, singular, related terms like 'water' and 'mineral water') is mentioned in this ingredient list: {api_result}. Reply with only 'yes' or 'no'."
+                "content": f"Check if '{target_en}' or '{target_other}' or similar variations (plural, singular, different languages, related terms like 'water' and 'mineral water' or 'spices' and a specific spice) is mentioned in this ingredient list: {api_result}. Reply with only 'yes' or 'no'."
             }
         ]
     }
 
+    if target_en.lower() in api_result.lower() or target_other.lower() in api_result.lower():
+        return True
 
     response = requests.post(url, headers=headers, json=data)
-    
+
     return "yes" in response.text.lower()
 
 api = API(
@@ -64,66 +66,74 @@ print(f"""
 |                  __/ |                                              |
 |                 |___/                                               |
  ---------------------------------------------------------------------{Style.RESET_ALL}""")
+while True:
+    choice = menu.menu(
+        title=f"Main Menu:\n",
+        options=["Play\n", "Credits\n", "Exit\n"],
+        cursor_color="green",
+        title_color="cyan",
+        options_color="white",
+    )
 
-choice = menu.menu(
-    title="Main Menu",
-    options=["Play", "Credits", "Exit"],
-    cursor_color="green",
-    title_color="cyan",
-    options_color="white",
-)
+    if choice == "Credits":
+        print("Made by _________________")
+        input("Press Enter to return")
 
-if choice == "Play":
-    pass  # start game
+    elif choice == "Exit":
+        exit()
 
-elif choice == "Credits":
-    print("Made by _________________")
-    input("Press Enter to return")
+    elif choice == "Play":
+        clock = int(input("Set how many seconds the timer should have: " ).strip())
 
-elif choice == "Exit":
-    exit()
-
-clock = int(prompt("Set how many seconds the timer should have: " ).strip())
-
-ingredient_en = random.choice(list(ingredients_list.ingredients_translated.keys()))
-ingredient_other = ingredients_list.ingredients_translated[ingredient_en]
-
-time_start = time.time()
-while time.time() - time_start < clock:
-    remaining_time = clock - int(time.time() - time_start)
-    print("\n"*100)
-    print(f"Timer: {Fore.RED}{remaining_time}{Style.RESET_ALL}s left")
-
-    print("Please find something containing: " + ingredient_en)
-    
-    code = input("Please scan your item: ")
-
-    if time.time() - time_start > clock:
-        print("\n"*100 + "Whoops, your time is already over \n")
-        break
-
-    api_response = api.product.get(code)
-    if not api_response:
-        print("Not found in database")
-        time.sleep(1.5)
-        continue
-
-    ingredients = str(api_response.get("ingredients"))
-
-    if check_ingredient(ingredient_en, str(ingredients)):
-        print("You got it!")
-        points += 1
-        
         ingredient_en = random.choice(list(ingredients_list.ingredients_translated.keys()))
         ingredient_other = ingredients_list.ingredients_translated[ingredient_en]
-    else:
-        print("You didn't get it")
 
-    time.sleep(1.5)
+        time_start = time.time()
+        while time.time() - time_start < clock:
+            remaining_time = clock - int(time.time() - time_start)
+            print("\n"*100)
+            print(f"Timer: {Fore.RED}{remaining_time}{Style.RESET_ALL}s left")
 
-print(f"Timer: 0s left")
-print(f"You got {points} in total")
-if points > highscore:
-    print("Congrats! You've set the new highscore!")
-    print(f"Previous Highscore: {highscore}")
-    print(f"New Highscore: {points}")
+            print("Please find something containing: " + ingredient_en)
+
+            code = input("Please scan your item (Type \"skip\" to skip the item): ")
+
+            if time.time() - time_start > clock:
+                print("\n"*100 + "Whoops, your time is already over \n")
+                break
+
+            if code.lower() == "skip":
+                print("Please hold for 15 seconds")
+                time.sleep(15)
+
+                ingredient_en = random.choice(list(ingredients_list.ingredients_translated.keys()))
+                ingredient_other = ingredients_list.ingredients_translated[ingredient_en]
+
+                print("Wait time now over!")
+
+            else:
+                api_response = api.product.get(code)
+                if not api_response:
+                    print("Not found in database")
+                    time.sleep(1.5)
+
+                else:
+                    ingredients = str(api_response.get("ingredients"))
+
+                    if check_ingredient(ingredient_en, ingredient_other, str(ingredients)):
+                        print("You got it!")
+                        points += 1
+
+                        ingredient_en = random.choice(list(ingredients_list.ingredients_translated.keys()))
+                        ingredient_other = ingredients_list.ingredients_translated[ingredient_en]
+                    else:
+                        print("You didn't get it")
+
+            time.sleep(1.5)
+
+        print(f"Timer: 0s left")
+        print(f"You got {points} in total")
+        if points > highscore:
+            print("Congrats! You've set the new highscore!")
+            print(f"Previous Highscore: {highscore}")
+            print(f"New Highscore: {points}")

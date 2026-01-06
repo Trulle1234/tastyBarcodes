@@ -12,7 +12,6 @@ ingredients_translated = {
     "Onion": "Zwiebel",
     "Yeast extract": "Hefeextrakt",
     "Garlic": "Knoblauch",
-    "Yeast": "Hefe",
     "Coloring": "Farbstoff",
     "Mineral water": "Mineralwasser",
     "Glucose": "Glukose",
@@ -23,7 +22,6 @@ ingredients_translated = {
     "Flavors": "Aromen",
     "Flavor enhancer": "Geschmacksverstärker",
     "Preservatives": "Konservierungsstoffe",
-    #"Sweeteners": "Süssungsmittel",
     "Sweeteners": "Süßungsmittel",
     "Aspartame": "Aspartam",
     "Wheat flour": "Weizenmehl",
@@ -35,7 +33,6 @@ ingredients_translated = {
     "Caramel sugar syrup": "Karamellzuckersirup",
     "Spices": "Gewürze",
     "Cinnamon": "Zimt",
-    "Raising agent": "Backtriebmittel",
     "Sunflower oil": "Sonnenblumenöl",
     "Skimmed milk powder": "Magermilchpulver",
     "Emulsifier": "Emulgator",
@@ -45,8 +42,5 @@ ingredients_translated = {
     "Dextrose": "Dextrose",
     "Gelatin": "Gelatine",
     "Fruit and plant concentrates": "Frucht- und Pflanzenkonzentrate",
-    "Carrot": "Karotte",
-    "Apple": "Apfel",
-    "Sweet potato": "Süßkartoffel",
     "Lemon": "Zitrone"
 }
