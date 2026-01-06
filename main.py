@@ -53,20 +53,8 @@ points = 0
 with open("highscore.txt") as f:
     highscore = int(f.readline())
 
-print(f"""
-{Fore.CYAN}
- ---------------------------------------------------------------------
-| Welcome to                                                          |
-|  _______                ____                          _             |
-| |__   __|              |  _ \\                        | |            |
-|    | | __ _ ___ _   _  | |_) | __ _ _ __ ___ ___   __| | ___  ___   |
-|    | |/ _` / __| | | | |  _ < / _` | '__/ __/ _ \\ / _` |/ _ \\/ __|  |
-|    | | (_| \\__ \\ |_| | | |_) | (_| | | | (_| (_) | (_| |  __/\\__ |  |
-|    |_|\\__,_|___/\\__, | |____/ \\__,_|_|  \\___\\___/ \\__,_|\\___||___/  |
-|                  __/ |                                              |
-|                 |___/                                               |
- ---------------------------------------------------------------------{Style.RESET_ALL}""")
-while True:
+active = True
+while active:
     choice = menu.menu(
         title=f"Main Menu:\n",
         options=["Play\n", "Credits\n", "Exit\n"],
@@ -75,14 +63,31 @@ while True:
         options_color="white",
     )
 
-    if choice == "Credits":
+    if choice:
+        print(f"""
+        {Fore.CYAN}
+         ---------------------------------------------------------------------
+        | Welcome to                                                          |
+        |  _______                ____                          _             |
+        | |__   __|              |  _ \\                        | |            |
+        |    | | __ _ ___ _   _  | |_) | __ _ _ __ ___ ___   __| | ___  ___   |
+        |    | |/ _` / __| | | | |  _ < / _` | '__/ __/ _ \\ / _` |/ _ \\/ __|  |
+        |    | | (_| \\__ \\ |_| | | |_) | (_| | | | (_| (_) | (_| |  __/\\__ |  |
+        |    |_|\\__,_|___/\\__, | |____/ \\__,_|_|  \\___\\___/ \\__,_|\\___||___/  |
+        |                  __/ |                                              |
+        |                 |___/                                               |
+         ---------------------------------------------------------------------{Style.RESET_ALL}""")
+
+    if choice == "Credits\n":
         print("Made by _________________")
         input("Press Enter to return")
 
-    elif choice == "Exit":
-        exit()
+    elif choice == "Exit\n":
+        print("exiting the program")
+        active = False
 
-    elif choice == "Play":
+
+    elif choice == "Play\n":
         clock = int(input("Set how many seconds the timer should have: " ).strip())
 
         ingredient_en = random.choice(list(ingredients_list.ingredients_translated.keys()))
@@ -91,7 +96,7 @@ while True:
         time_start = time.time()
         while time.time() - time_start < clock:
             remaining_time = clock - int(time.time() - time_start)
-            print("\n"*100)
+            os.system('cls' if os.name == 'nt' else 'clear')
             print(f"Timer: {Fore.RED}{remaining_time}{Style.RESET_ALL}s left")
 
             print("Please find something containing: " + ingredient_en)
@@ -99,7 +104,8 @@ while True:
             code = input("Please scan your item (Type \"skip\" to skip the item): ")
 
             if time.time() - time_start > clock:
-                print("\n"*100 + "Whoops, your time is already over \n")
+                os.system('cls' if os.name == 'nt' else 'clear')
+                print("Whoops, your time is already over \n")
                 break
 
             if code.lower() == "skip":
