@@ -8,18 +8,37 @@ import menu
 import ingredients_list
 import os, os.path
 
-
-def add_score(score):
+def add_score(score, name):
+    if not os.path.isfile("leaderboard.txt"):
+        with open("leaderboard.txt", "w") as f:
+            f.write("")
     with open("leaderboard.txt", "a") as f:
-        f.write(f"{score}\n")
+        f.write(f"{name}:{score}\n")
 
-
-def show_scores():
-    print("Leaderboard:")
+def load_highscore():
+    h_score = 0
     if os.path.isfile("leaderboard.txt"):
         with open("leaderboard.txt") as f:
-            line_array = f.readline().split(":")
-            print(line_array[0] + line_array[1])
+            score_dict = {}
+            for line in f:
+                line_array = line.rstrip().split(":")
+                if h_score < int(line_array[1]):
+                    h_score = int(line_array[1])
+    return h_score
+
+def show_scores():
+    print(f"{Fore.MAGENTA}Leaderboard:{Style.RESET_ALL}")
+    if os.path.isfile("leaderboard.txt"):
+        with open("leaderboard.txt") as f:
+            score_dict = {}
+            for line in f:
+                line_array = line.rstrip().split(":")
+                score_dict[line_array[0]] = int(line_array[1])
+            score_dict_sorted = dict(sorted(score_dict.items(), key=lambda kv: kv[1], reverse=True))
+            for name in score_dict_sorted:
+                print(f"{Fore.LIGHTYELLOW_EX}{name}{Style.RESET_ALL}: {Fore.CYAN}{str(score_dict[name])}{Style.RESET_ALL}")
+    else:
+        print("Nobody on this PC has played the game yet!")
 
 def check_ingredient(target_en, target_other, name, api_result):
     url = "https://ai.hackclub.com/proxy/v1/chat/completions"
@@ -63,7 +82,7 @@ if not api_key:
 ingredient_array = []
 clock = 60
 points = 0
-highscore = 0
+highscore = load_highscore()
 title = f"""
  ---------------------------------------------------------------------
 |  _______                ____                          _             |
@@ -159,15 +178,18 @@ Trulle123
                 print(f"{Fore.RED}Please enter a valid barcode{Style.RESET_ALL}")
             time.sleep(1.5)
 
-        print(f"Timer: 0s left")
-        print(f"You got {points} in total")
-        print("Leaderboard:")
+        print(f"Timer: {Fore.BLUE}0{Style.RESET_ALL}s left")
+        print(f"You got {points} points in total")
+        print("\n")
         show_scores()
+        print("\n")
         if points > highscore:
             print(f"{Fore.CYAN}Congrats! You've set the new highscore!{Style.RESET_ALL}")
             print(f"Previous Highscore: {highscore}")
             print(f"New Highscore: {points}")
+            print("\n")
             highscore = points
-            add_score(points)
+            name = input(f"{Fore.CYAN}Enter a your name: {Style.RESET_ALL}")
+            add_score(points, name)
 
-        input("Press Enter to return")
+        input("\nPress Enter to return")
