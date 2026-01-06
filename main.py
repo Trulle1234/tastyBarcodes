@@ -9,30 +9,17 @@ import ingredients_list
 import os, os.path
 
 
-def add_score(new_score):
-    filename = "leaderboard.txt"
-    try:
-        with open(filename, "r") as file:
-            scores = [int(line.strip()) for line in file if line.strip()]
-    except FileNotFoundError:
-        scores = []
-
-    scores.append(new_score)
-
-    scores.sort(reverse=True)
-
-    with open(filename, "w") as file:
-        for score in scores:
-            file.write(f"{score}\n")
+def add_score(score):
+    with open("leaderboard.txt", "a") as f:
+        f.write(f"{score}\n")
 
 
 def show_scores():
     print("Leaderboard:")
-    with open("leaderboard.txt", "r") as file:
-        for i, score in enumerate(file, start=1):
-            print(f"{i}. {score.strip()}")
-            if score > highscore:
-                highscore = score
+    if os.path.isfile("leaderboard.txt"):
+        with open("leaderboard.txt") as f:
+            line_array = f.readline().split(":")
+            print(line_array[0] + line_array[1])
 
 def check_ingredient(target_en, target_other, name, api_result):
     url = "https://ai.hackclub.com/proxy/v1/chat/completions"
@@ -74,7 +61,6 @@ if not api_key:
     exit()
 
 ingredient_array = []
-leaderboard = {}
 clock = 60
 points = 0
 highscore = 0
@@ -90,12 +76,6 @@ title = f"""
 |                 |___/                                               |
  ---------------------------------------------------------------------
 """
-if os.path.isfile("leaderboard.txt"):
-    with open("leaderboard.txt") as f:
-        #line_array = f.readline().split(":")
-        #leaderboard[line_array[0]] = int(line_array[1])
-        #if int(line_array[1]) > highscore:
-            pass
 
 active = True
 while active:
@@ -106,9 +86,15 @@ while active:
         title_color="cyan",
         options_color="white",
     )
-    print("\n"*20)
+
+    os.system('cls' if os.name == 'nt' else 'clear')
     if choice == "Credits\n":
-        print("Made by _________________")
+        print(f"""
+{Fore.LIGHTCYAN_EX}Made by:{Style.RESET_ALL}
+TheTwoBoom
+Flavius
+Trulle123
+            """)
         input("Press Enter to return")
 
     elif choice == "Exit\n":
@@ -117,7 +103,7 @@ while active:
 
     elif choice == "Leaderboard\n":
         show_scores()
-        print("\n"*2)
+        print("\n")
         input("Press Enter to return")
 
     elif choice == "Play\n":
@@ -176,8 +162,7 @@ while active:
         print(f"Timer: 0s left")
         print(f"You got {points} in total")
         print("Leaderboard:")
-        for key in leaderboard:
-            print(key + ": " + leaderboard[key])
+        show_scores()
         if points > highscore:
             print(f"{Fore.CYAN}Congrats! You've set the new highscore!{Style.RESET_ALL}")
             print(f"Previous Highscore: {highscore}")
